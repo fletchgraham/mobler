@@ -2,7 +2,7 @@ from tkinter import *
 #from tkinter.ttk import *
 from tkinter.filedialog import askdirectory
 
-from asset_view import AssetView
+from grid_view import GridView
 
 class View():
     def __init__(self, model):
@@ -15,7 +15,7 @@ class View():
 
     def create_widgets(self):
         self.create_the_top_bar()
-        self.create_the_asset_view()
+        self.create_the_grid_view()
         self.create_the_footer()
 
     def create_the_top_bar(self):
@@ -43,10 +43,10 @@ class View():
             b.configure(relief=FLAT)
             b.pack(side=LEFT)
 
-    def create_the_asset_view(self):
-        self.asset_view = AssetView(self.root, bg='white')
-        self.asset_view.pack(fill=BOTH, expand=True)
-        self.asset_view.add_assets(self.model.get_assets())
+    def create_the_grid_view(self):
+        self.grid_view = GridView(self.root, bg='white')
+        self.grid_view.pack(fill=BOTH, expand=True)
+        self.grid_view.add_items(self.model.get_assets())
 
     def create_the_footer(self):
         # Container
@@ -62,12 +62,12 @@ class View():
     # COMMANDS
 
     def decrease_thumb_size(self):
-        self.asset_view.columns.set(self.asset_view.columns.get() + 1)
-        self.asset_view.draw_assets()
+        self.grid_view.columns.set(self.grid_view.columns.get() + 1)
+        self.grid_view.draw_items()
 
     def increase_thumb_size(self):
-        self.asset_view.columns.set(self.asset_view.columns.get() - 1)
-        self.asset_view.draw_assets()
+        self.grid_view.columns.set(self.grid_view.columns.get() - 1)
+        self.grid_view.draw_items()
 
     def change_library(self):
         new_path = askdirectory()
