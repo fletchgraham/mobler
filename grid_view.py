@@ -19,6 +19,8 @@ class GridView(Canvas):
         print(event)
         self.yview('scroll', -event.delta//100, 'units')
 
+        self.limit_scroll()
+
     def bind_to_scroll(self, event):
         print(event)
         self.bind('<MouseWheel>', self.roll_wheel)
@@ -42,16 +44,38 @@ class GridView(Canvas):
 
     def draw_single_item(self, index, item):
         self.update()
-        width = self.winfo_width()
-        cols = self.columns.get()
-        w = width / cols
-        x1 = (index % cols) * (w)
-        y1 = (index // cols) * (w)
+        x1, y1, w = self.get_item_coords(index)
         x2 = x1 + w
         y2 = y1 + w
         self.create_rectangle(x1, y1, x2, y2)
         self.create_text(x1 + w / 2, y1 + w / 2, text=item)
 
+    def get_bottom(self):
+        last = len(self.items)
+        x, y, w = self.get_item_coords(last)
+        bottom = y + w
+        return bottom
+
+    def get_item_coords(self, index):
+        """Return x, y, w at a given item index."""
+        width = self.winfo_width()
+        cols = self.columns.get()
+        w = width / cols
+        x = (index % cols) * (w)
+        y = (index // cols) * (w)
+        return(x, y, w)
+
+    def limit_scroll(self):
+        offset = self.canvasy(0)
+        h = self.winfo_height()
+        extent = self.canvasy(h)
+        if offset <= 0:
+            self.yview_moveto(0)
+
+        b = self.get_bottom()
+        if extent >= b:
+            print(f'BOTTOM: {b-h}')
+            self.yview_moveto(b)
 
 def main():
     root = Tk()
